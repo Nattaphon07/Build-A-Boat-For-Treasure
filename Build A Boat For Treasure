@@ -1,4 +1,133 @@
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+local Window = Fluent:CreateWindow({
+    Title = "Xeno Ez" .. Fluent.Version,
+    SubTitle = "@xeno_executor",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true,
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl
+})
+
+local Tabs = {
+    Main = Window:AddTab({ Title = "Auto Gold", Icon = "" }),
+    Auto = Window:AddTab({ Title = "Auto Buy", Icon = "" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+}
+
+local Options = Fluent.Options
+
+-- ฟังก์ชันสำหรับการเคลื่อนที่
+local function teleportTo(destination, time)
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+
+    local tween = game:GetService("TweenService"):Create(
+        character.HumanoidRootPart,
+        TweenInfo.new(time or 0),
+        {CFrame = CFrame.new(destination)}
+    )
+    tween:Play()
+    tween.Completed:Wait()
+end
+
+-- เพิ่ม Toggle สำหรับ Autofarm Loop
+local AutofarmLoopToggle = Tabs.Main:AddToggle("AutofarmLoopToggle", { Title = "Auto Gold 100%", Default = false })
+
+-- เรียกใช้ Autofarm Loop เมื่อ Toggle ถูกเปิด
+AutofarmLoopToggle:OnChanged(function()
+    if AutofarmLoopToggle.Value then
+        task.spawn(function()
+            while AutofarmLoopToggle.Value do -- เริ่มวนลูปถ้า Toggle เปิดอยู่
+                game.workspace.Gravity = 0 -- ปิดแรงโน้มถ่วงชั่วคราว
+                teleportTo(Vector3.new(-142.677292, 109.114311, 736.056458), 3)
+                teleportTo(Vector3.new(-52.9965401, 79.506752, 8646.33984), 33)
+                teleportTo(Vector3.new(-48.2867279, -358.622314, 8826.5), 2)
+                teleportTo(Vector3.new(-55.4865074, -360.404236, 9488.46973), 0)
+                game.workspace.Gravity = 196.2 -- คืนค่าแรงโน้มถ่วงกลับสู่ปกติ
+
+                task.wait(15) -- รอ 10 วินาทีก่อนเริ่มต้นใหม่
+            end
+        end)
+    end
+end)
 
 
+-- ฟังก์ชันซื้อ Chest
+local function BuyChest(chestName, amount)
+    local args = {
+        [1] = chestName,
+        [2] = amount
+    }
+    workspace.ItemBoughtFromShop:InvokeServer(unpack(args))
+end
 
-local a=loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()local b=loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()local c=loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()local d=a:CreateWindow({Title="Xeno Ez"..a.Version,SubTitle="@xeno_executor",TabWidth=160,Size=UDim2.fromOffset(580,460),Acrylic=true,Theme="Dark",MinimizeKey=Enum.KeyCode.LeftControl})local e={Main=d:AddTab({Title="Auto Gold",Icon=""}),Auto=d:AddTab({Title="Auto Buy",Icon=""}),Settings=d:AddTab({Title="Settings",Icon="settings"})}local f=a.Options;local function f()local a=game.Players.LocalPlayer;repeat task.wait()until a.Character~=nil;local a=a.Character;local b=Instance.new("Part")b.Anchored=true;b.CanCollide=false;b.Transparency=1;b.Position=Vector3.new(-50,60,0)b.Parent=workspace;local c=game:GetService("TweenService")local d=c:Create(b,TweenInfo.new(math.random(20),Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),{Position=Vector3.new(-50,60,8500)})d:Play()repeat task.wait()a:PivotTo(b.CFrame)until(b.Position-Vector3.new(-50,60,8500)).Magnitude<1;local c=c:Create(b,TweenInfo.new(2,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),{Position=Vector3.new(-50,-360,9500)})c:Play()repeat task.wait()a:PivotTo(b.CFrame)until(b.Position-Vector3.new(-50,-360,9500)).Magnitude<1;b:Destroy()end;local function g()a:Notify({Title="Notification",Content="Instant Win activated.",Duration=5})end;local function h(a)task.spawn(function()while a.Value do f()g()task.wait(3)end end)end;local f=e.Main:AddToggle("InstantWinToggle",{Title="Auto Instant Win",Default=false})f:OnChanged(function()if f.Value then h(f)end end)local function f(a,b)local a={[1]=a,[2]=b}workspace.ItemBoughtFromShop:InvokeServer(unpack(a))end;local function g(a,b)task.spawn(function()while a.Value do f(b,1)task.wait(3)end end)end;local f=e.Auto:AddToggle("RareChestToggle",{Title="Auto Buy Rare Chest",Default=false})f:OnChanged(function()if f.Value then g(f,"Rare Chest")end end)local f=e.Auto:AddToggle("UncommonChestToggle",{Title="Auto Buy Uncommon Chest",Default=false})f:OnChanged(function()if f.Value then g(f,"Uncommon Chest")end end)local f=e.Auto:AddToggle("YellowChestToggle",{Title="Auto Buy Yellow Chest",Default=false})f:OnChanged(function()if f.Value then g(f,"Yellow Chest")end end)local f=e.Auto:AddToggle("CommonChestToggle",{Title="Auto Buy Common Chest",Default=false})f:OnChanged(function()if f.Value then g(f,"Commont Chest")end end)local f=e.Auto:AddToggle("EpicChestToggle",{Title="Auto Buy Epic Chest",Default=false})f:OnChanged(function()if f.Value then g(f,"Epic Chest")end end)b:SetLibrary(a)c:SetLibrary(a)b:IgnoreThemeSettings()b:SetIgnoreIndexes({})c:SetFolder("FluentScriptHub")b:SetFolder("FluentScriptHub/specific-game")c:BuildInterfaceSection(e.Settings)b:BuildConfigSection(e.Settings)d:SelectTab(1)a:Notify({Title="Fluent",Content="The script has been loaded.",Duration=8})
+-- ฟังก์ชันสำหรับ Toggle เพื่อซื้อ Chest
+local function AutoBuyChest(toggleOption, chestName)
+    task.spawn(function()
+        while toggleOption.Value do
+            BuyChest(chestName, 1)
+            task.wait(3) -- ระยะเวลาระหว่างการซื้อ (ปรับได้)
+        end
+    end)
+end
+
+-- เพิ่ม Toggle สำหรับซื้อ Chest
+local RareChestToggle = Tabs.Auto:AddToggle("RareChestToggle", { Title = "Auto Buy Rare Chest", Default = false })
+RareChestToggle:OnChanged(function()
+    if RareChestToggle.Value then
+        AutoBuyChest(RareChestToggle, "Rare Chest")
+    end
+end)
+
+local UncommonChestToggle = Tabs.Auto:AddToggle("UncommonChestToggle", { Title = "Auto Buy Uncommon Chest", Default = false })
+UncommonChestToggle:OnChanged(function()
+    if UncommonChestToggle.Value then
+        AutoBuyChest(UncommonChestToggle, "Uncommon Chest")
+    end
+end)
+
+local YellowChestToggle = Tabs.Auto:AddToggle("YellowChestToggle", { Title = "Auto Buy Yellow Chest", Default = false })
+YellowChestToggle:OnChanged(function()
+    if YellowChestToggle.Value then
+        AutoBuyChest(YellowChestToggle, "Yellow Chest")
+    end
+end)
+
+local CommonChestToggle = Tabs.Auto:AddToggle("CommonChestToggle", { Title = "Auto Buy Common Chest", Default = false })
+CommonChestToggle:OnChanged(function()
+    if CommonChestToggle.Value then
+        AutoBuyChest(CommonChestToggle, "Common Chest")
+    end
+end)
+
+local EpicChestToggle = Tabs.Auto:AddToggle("EpicChestToggle", { Title = "Auto Buy Epic Chest", Default = false })
+EpicChestToggle:OnChanged(function()
+    if EpicChestToggle.Value then
+        AutoBuyChest(EpicChestToggle, "Epic Chest")
+    end
+end)
+
+-- การตั้งค่าทั่วไป
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetIgnoreIndexes({})
+
+InterfaceManager:SetFolder("FluentScriptHub")
+SaveManager:SetFolder("FluentScriptHub/specific-game")
+
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+
+Window:SelectTab(1)
+
+Fluent:Notify({
+    Title = "Fluent",
+    Content = "The script has been loaded.",
+    Duration = 8
+})
