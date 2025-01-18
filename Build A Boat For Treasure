@@ -20,6 +20,39 @@ local Tabs = {
 
 local Options = Fluent.Options
 
+
+
+Tabs.Main:AddButton({
+    Title = "วิธีการใช้งาน เบื้องต้น!",
+    Description = "กดปุ่ม Auto Gold เพื่อระทำการฟาม",
+   
+   
+})
+Tabs.Main:AddButton({
+    Title = "Really redZone",
+ 
+    Callback = function()
+        Window:Dialog({
+            Title = "Really redZone",
+
+            Buttons = {
+                {
+                    Title = "Confirm",
+                    Callback = function()
+                        workspace:WaitForChild("Really redZone"):WaitForChild("VoteLaunchRE"):FireServer()
+
+                    end
+                },
+                {
+                    Title = "Cancel",
+                    Callback = function()
+                        print("Cancelled the dialog.")
+                    end
+                }
+            }
+        })
+    end
+})
 -- ฟังก์ชันสำหรับการเคลื่อนที่
 local function teleportTo(destination, time)
     local player = game.Players.LocalPlayer
@@ -55,6 +88,12 @@ AutofarmLoopToggle:OnChanged(function()
     end
 end)
 
+Tabs.Auto:AddButton({
+    Title = "วิธีการใช้งาน เบื้องต้น!",
+    Description = "ซื้อ กล่องหลายๆครั้ง Auto",
+   
+   
+})
 
 -- ฟังก์ชันซื้อ Chest
 local function BuyChest(chestName, amount)
